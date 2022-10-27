@@ -1,0 +1,18 @@
+map_dimension: [1000, 1000]
+generation_type: random
+generation_parameters:
+  circle:
+    mean_count: 20
+    std_count: 5
+    mean_radius: 40
+    std_radius: 10
+  circle2:
+    mean_count: 1
+    std_count: 0
+    mean_radius: 100
+    std_radius: 50
+  rectangle:
+    mean_count: 20
+    std_count: 5
+    mean_length: 100
+    std_length: 25
