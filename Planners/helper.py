@@ -10,12 +10,14 @@ def cost_func(path,map,weight_1,weight_2):
         weight_2 (float): weight given to shortest length
     """
     violation = 0
-    for point in map:
-        if point==0:
-            for path_point in path:
-                if calc_dist(point,path_point) == 0:
-                    violation+=1
-    length_of_path = len(path)
+    length_of_path = 0
+    for path_point in path:
+        if map[path_point[0], path_point[1]] == 0:
+            violation += 1
+    
+    for x,y in zip(path,path[1:]):
+        length_of_path+= calc_dist(x,y)
+    
     cost = weight_1 * violation + weight_2 * length_of_path
 
     return cost                
