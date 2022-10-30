@@ -8,29 +8,33 @@ from math import gamma
 import numpy as np
 
 
-def levy_flight(start: np.ndarray, alpha: float, param_lambda: float, gen: np.random.Generator) -> np.ndarray:
+def levy_flight(start: np.ndarray, low_step: float, high_step: float, high_step_prob: float, gen: np.random.Generator) -> np.ndarray:
     """
-    Perform a levy flight step.
+    Perform a Lévy flight step.
 
     Arguments:
         start {numpy.ndarray} -- The cuckoo's start position
-        alpha {float} -- The step size
-        param_lambda {float} -- lambda parameter of the levy distribution
+        low_step {float} -- step size of the low step
+        high_step {float} -- step size of the low step
+        high_step_prob -- probability of high step
         gen {Generator} -- the generator used to generate pseudo random numbers
 
     Returns:
         numpy.ndarray -- The new position
     """
+    total_points = len(start) // 2
+    point_change = list()
 
-    dividend = gamma(1 + param_lambda) * np.sin(np.pi * param_lambda / 2)
-    divisor = gamma((1 + param_lambda) / 2) * param_lambda * np.power(2, (param_lambda - 1) / 2)
-    sigma1 = np.power(dividend / divisor, 1 / param_lambda)
+    for _ in range(total_points):
+        if gen.random() <= high_step_prob:
+            step_size = high_step
+        else:
+            step_size = low_step
+        u = gen.random(2)
+        u_hat = u / np.linalg.norm(u)
+        v = u * step_size
 
-    sigma2 = 1
+        point_change.append(v[0])
+        point_change.append(v[1])
 
-    u_vec = gen.normal(0, sigma1, size=2)
-    v_vec = gen.normal(0, sigma2, size=2)
-
-    step_length = u_vec / np.power(np.fabs(v_vec), 1 / param_lambda)
-
-    return start + alpha * step_length
+    return start + np.array(point_change)

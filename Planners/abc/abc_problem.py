@@ -9,10 +9,10 @@ import logging
 
 from .bees.employee_bee import EmployeeBee
 from .bees.onlooker_bee import OnlookerBee
-from .visualizer import Visualizer
 from ..util.problem_base import ProblemBase
 
 LOGGER = logging.getLogger(__name__)
+
 
 class ABCProblem(ProblemBase):
     """Artificial Bee Colony Problem"""
@@ -33,14 +33,11 @@ class ABCProblem(ProblemBase):
             for _ in range(kwargs['bees'])
         ]
 
-        self._visualizer = Visualizer(**kwargs)
-
     def solve(self):
         """
         Solve the ABC problem
         """
         best = min(self.__employee_bees + self.__onlooker_bees, key=lambda bee: bee.value)
-        self._visualizer.add_data(employee_bees=self.__employee_bees, onlooker_bees=self.__onlooker_bees, best_position=best.position)
 
         for iteration in range(self.__iteration_number):
             # Employee bee phase
@@ -63,13 +60,13 @@ class ABCProblem(ProblemBase):
             for bee in self.__employee_bees + self.__onlooker_bees:
                 bee.reset()
 
-             # Update best food source
+            # Update best food source
             current_best = min(self.__employee_bees + self.__onlooker_bees)
             if current_best < best:
                 best = deepcopy(current_best)
-                LOGGER.info('Iteration %i Found new best solution="%s" at position="%s"', iteration+1, best.value, best.position)
+                LOGGER.info('Iteration %i Found new best solution="%s"', iteration+1, best.value)
 
-            # Add data for plotting
-            self._visualizer.add_data(employee_bees=self.__employee_bees, onlooker_bees=self.__onlooker_bees, best_position=best.position)
+            if self.iteration_callback:
+                self.iteration_callback(iteration, best)
 
         return best

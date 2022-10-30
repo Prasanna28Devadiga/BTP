@@ -6,6 +6,7 @@
 from typing import Tuple
 from ...util.coordinate import Coordinate
 from ...util.levy_flight import levy_flight
+import numpy as np
 
 
 class BeeBase(Coordinate):
@@ -16,8 +17,11 @@ class BeeBase(Coordinate):
         """
         super().__init__(**kwargs)
         self.__limit = kwargs.get('trials', 3)
-        self.__lambda = kwargs.get('lambda', 1.5)
-        self.__alpha = kwargs.get('alpha', 1.)
+        self.low_step = kwargs.get('low_step', 0.1)
+        self.high_step = kwargs.get('high_step', 0.4)
+        self.high_step_prob = kwargs.get('high_step_prob', 0.1)
+        self.__lower_boundary = kwargs.get('lower_boundary', 0.)
+        self.__upper_boundary = kwargs.get('upper_boundary', 1.)
         self.__trials = 0
         self.__reset = True
 
@@ -40,7 +44,7 @@ class BeeBase(Coordinate):
             self.__trials = 0
             self.__reset = True
 
-    def _explore(self, starting_position: Tuple[float, float], start_value: float) -> None:
+    def _explore(self, starting_position: np.ndarray, start_value: float) -> None:
         """
         Try to generate a new, position and save the better one
 
@@ -48,7 +52,8 @@ class BeeBase(Coordinate):
             starting_position (Tuple[float, float]): The starting position
             start_value (float): The positions value
         """
-        new_pos = levy_flight(starting_position, self.__alpha, self.__lambda, self._random)
+        new_pos = levy_flight(starting_position, self.low_step, self.high_step, self.high_step_prob, self._random)
+        new_pos = np.clip(new_pos, a_min=self.__lower_boundary, a_max=self.__upper_boundary)
         new_value = self._function(new_pos)
 
         if new_value < start_value:

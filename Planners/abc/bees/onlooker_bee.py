@@ -5,9 +5,11 @@
 
 from typing import Tuple
 from .bee_base import BeeBase
+import numpy as np
+
 
 class OnlookerBee(BeeBase):
-    def explore(self, starting_position: Tuple[float, float], start_value: float) -> None:
+    def explore(self, starting_position: np.ndarray, start_value: float) -> None:
         """
         Explore new food sources from the given one
 

@@ -1,29 +1,30 @@
 import numpy as np
-def cost_func(path,map,weight_1,weight_2):
+
+
+def cost_func(path, curr_map, weight_1, weight_2):
     """
     Returns the cost calculated as a weighted sum of the obstacle violations and the length of the path
 
     Args:
         path (array): array of pixels containing the path 
-        map (array): array of pixels containing obstacles
+        curr_map (array): array of pixels containing obstacles
         weight_1 (float): weight given to obstacle avoidance
         weight_2 (float): weight given to shortest length
     """
     violation = 0
-    length_of_path = 0
     for path_point in path:
-        if map[path_point[0], path_point[1]] == 0:
+        if curr_map[path_point[1], path_point[0]] == 0:
             violation += 1
-    
-    for x,y in zip(path,path[1:]):
-        length_of_path+= calc_dist(x,y)
+    length_of_path = 0
+    for x, y in zip(path, path[1:]):
+        length_of_path += np.linalg.norm(x-y)
     
     cost = weight_1 * violation + weight_2 * length_of_path
 
     return cost                
     
 
-def calc_dist(p1,p2):
+def calc_dist(p1, p2):
     """
     Returns distance between two points
 
@@ -34,15 +35,27 @@ def calc_dist(p1,p2):
     dist = np.linalg.norm(p1-p2)
     return dist
 
-def linear_interpolation(start,end,npoints):
+
+def draw_line(start, end):
+    itr = max(abs(end[0] - start[0]), abs(end[1] - start[1]))
+    Px = np.linspace(start[0], end[0], itr + 1)
+    Py = np.linspace(start[1], end[1], itr + 1)
+    final_points = np.concatenate((Px.reshape(-1, 1), Py.reshape(-1, 1)), axis=1)
+    return final_points
+
+
+def linear_interpolation(start, end, inter_points):
     """
     Returns the straight path between start and goal position
     """
-    xs, ys = start
-    xg, yg = end
-
-    Px = np.linspace(xs, xg, npoints+2)
-    Py = np.linspace(ys, yg, npoints+2)
-
-    lin_path = np.concatenate((Px[1:-1], Py[1:-1]))
-    return lin_path
+    prev_point = start
+    inter_points = np.append(inter_points, np.array([end]), axis=0)
+    path = None
+    for point in inter_points:
+        curr_path = draw_line(prev_point, point)
+        if path is None:
+            path = curr_path
+        else:
+            path = np.append(path, curr_path[1:], axis=0)
+        prev_point = point
+    return path.round().astype(np.int32)
