@@ -8,7 +8,6 @@
 import logging
 
 from .particle import Particle
-from ..util.base_visualizer import BaseVisualizer
 from ..util.problem_base import ProblemBase
 
 LOGGER = logging.getLogger(__name__)
@@ -26,14 +25,9 @@ class PSOProblem(ProblemBase):
             for _ in range(kwargs['particles'])
         ]
 
-        # Initialize visualizer for plotting
-        positions = [particle.position for particle in self.__particles]
-        self._visualizer = BaseVisualizer(**kwargs)
-        self._visualizer.add_data(positions=positions)
-
     def solve(self) -> Particle:
         # And also update global_best_particle
-        for _ in range(self.__iteration_number):
+        for iteration in range(self.__iteration_number):
 
             # Update global best
             global_best_particle = min(self.__particles)
@@ -41,9 +35,8 @@ class PSOProblem(ProblemBase):
             for particle in self.__particles:
                 particle.step(global_best_particle.position)
 
-            # Add data for plot
-            positions = [particle.position for particle in self.__particles]
-            self._visualizer.add_data(positions=positions)
+            if self.iteration_callback:
+                self.iteration_callback(iteration, global_best_particle)
 
-        LOGGER.info('Last best solution="%s" at position="%s"', global_best_particle.value, global_best_particle.position)
+        LOGGER.info('Last best solution="%s"', global_best_particle.value)
         return global_best_particle

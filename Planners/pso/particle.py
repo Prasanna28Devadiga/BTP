@@ -17,10 +17,10 @@ class Particle(Coordinate):
         self.__w = kwargs.get('weight', .5)
         self.__c_1 = kwargs.get('c_1', 2)
         self.__c_2 = kwargs.get('c_2', 2)
-        self.__max_velocity = kwargs.get('maximum_velocity', 2)
+        self.__max_velocity = kwargs.get('maximum_velocity', 0.2)
 
         # Randomly create a new particle properties
-        self.__velocity = self._random.uniform(-1, 1, size=2)
+        self.__velocity = self._random.uniform(-1, 1, size=self.points*2)
         self.__clip_velocity()
 
         # Local best
@@ -31,7 +31,7 @@ class Particle(Coordinate):
     def velocity(self) -> float:
         return self.__velocity
 
-    def step(self, global_best_pos: Tuple[float, float]) -> None:
+    def step(self, global_best_pos: np.ndarray) -> None:
         """
         Execute a particle step.
         Update the particle's velocity, position and value.
@@ -41,8 +41,8 @@ class Particle(Coordinate):
         """
 
         # Calculate velocity
-        cognitive_velocity = self.__c_1 * self._random.random(size=2) * (self.__best_position - self._position)
-        social_velocity = self.__c_2 * self._random.random(size=2) * (global_best_pos - self._position)
+        cognitive_velocity = self.__c_1 * self._random.random(size=self.points*2) * (self.__best_position - self._position)
+        social_velocity = self.__c_2 * self._random.random(size=self.points*2) * (global_best_pos - self._position)
         self.__velocity = self.__w * self.__velocity + cognitive_velocity + social_velocity
 
         # Clip velocity
