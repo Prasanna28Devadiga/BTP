@@ -7,7 +7,6 @@ import logging
 from copy import deepcopy
 import numpy as np
 from .wolf import Wolf
-from .visualizer import Visualizer
 from ..util.problem_base import ProblemBase
 
 # pylint: disable=too-many-instance-attributes
@@ -28,14 +27,6 @@ class GWOProblem(ProblemBase):
             for _ in range(kwargs['wolves'])
         ]
 
-        # Initialize visualizer for plotting
-        best_indices = np.argsort(self.__wolves)[:3]
-        positions = [wolf.position for wolf in self.__wolves]
-        self._visualizer = Visualizer(**kwargs)
-        self._visualizer.add_data(
-            positions=positions,
-            best_wolf_indices=best_indices)
-
     def solve(self) -> Wolf:
 
         # Initialization
@@ -44,7 +35,7 @@ class GWOProblem(ProblemBase):
         alpha, beta, delta = [deepcopy(self.__wolves[index]) for index in best_indices]
 
         for iter_no in range(self.__iteration_number):
-            a_parameter = 2 - iter_no * ((2) / self.__iteration_number)
+            a_parameter = 2 - iter_no * (2 / self.__iteration_number)
 
             for wolf in self.__wolves:
                 wolf.step(a_parameter, alpha.position, beta.position, delta.position)
@@ -54,14 +45,11 @@ class GWOProblem(ProblemBase):
 
             LOGGER.info('Current best value: %s, Overall best value: %s', alpha.value, best.value)
 
-            # Add data for plot
-            positions = [wolf.position for wolf in self.__wolves]
-            self._visualizer.add_data(
-                positions=positions,
-                best_wolf_indices=best_indices)
-
             # Update alpha beta delta
             best_indices = np.argsort(self.__wolves)[:3]
             alpha, beta, delta = [deepcopy(self.__wolves[index]) for index in best_indices]
+
+            if self.iteration_callback:
+                self.iteration_callback(iter_no, best)
 
         return best

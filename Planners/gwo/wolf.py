@@ -4,14 +4,13 @@
 # ------------------------------------------------------------------------------------------------------
 
 # pylint: disable-msg=too-many-locals
-from typing import Tuple
-
+import numpy as np
 from ..util.coordinate import Coordinate
 
 
 class Wolf(Coordinate):
-    def step(self, a_parameter, alpha_pos: Tuple[float, float], beta_pos: Tuple[float, float],
-             delta_pos: Tuple[float, float]) -> None:
+    def step(self, a_parameter, alpha_pos: np.ndarray, beta_pos: np.ndarray,
+             delta_pos: np.ndarray) -> None:
         """
         Execute a wolf step.
         Update the wolf's position and value.
@@ -21,7 +20,6 @@ class Wolf(Coordinate):
             beta_pos {Tuple[float, float]} -- The beta position
             delta_pos {Tuple[float, float]} -- The delta position
         """
-
 
         r_1 = self._random.random()  # r_1 is a random number in [0,1]
         r_2 = self._random.random()  # r_2 is a random number in [0,1]
