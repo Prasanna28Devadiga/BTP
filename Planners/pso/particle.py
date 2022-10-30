@@ -46,7 +46,7 @@ class Particle(Coordinate):
         self.__velocity = self.__w * self.__velocity + cognitive_velocity + social_velocity
 
         # Clip velocity
-        self.__clip_velocity()
+        #self.__clip_velocity()
 
         # Update position and clip it to boundaries
         self._position = self._position + self.__velocity
