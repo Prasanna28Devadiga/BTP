@@ -1,0 +1,5 @@
+map_dimension: [500, 500]
+generation_type: custom
+generation_parameters:
+  polygon:
+    - [[100, 100], [200, 100], [200, 300], [300, 300], [300, 100], [400, 100], [400, 400], [100, 400]]

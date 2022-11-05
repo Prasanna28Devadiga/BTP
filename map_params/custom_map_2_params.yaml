@@ -1,0 +1,5 @@
+map_dimension: [500, 500]
+generation_type: custom
+generation_parameters:
+  circle:
+    - [250, 250, 50]
