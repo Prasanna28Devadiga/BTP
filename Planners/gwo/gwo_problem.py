@@ -50,6 +50,6 @@ class GWOProblem(ProblemBase):
             alpha, beta, delta = [deepcopy(self.__wolves[index]) for index in best_indices]
 
             if self.iteration_callback:
-                self.iteration_callback(iter_no, best)
+                self.iteration_callback(iter_no, best.position)
 
         return best

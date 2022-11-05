@@ -67,6 +67,6 @@ class ABCProblem(ProblemBase):
                 LOGGER.info('Iteration %i Found new best solution="%s"', iteration+1, best.value)
 
             if self.iteration_callback:
-                self.iteration_callback(iteration, best)
+                self.iteration_callback(iteration, best.position)
 
         return best

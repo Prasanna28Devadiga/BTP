@@ -41,7 +41,7 @@ class PSOProblem(ProblemBase):
                 best = deepcopy(global_best_particle)
 
             if self.iteration_callback:
-                self.iteration_callback(iteration, best)
+                self.iteration_callback(iteration, best.position)
 
         LOGGER.info('Last best solution="%s"', best.value)
         return best
