@@ -6,6 +6,7 @@
 # pylint: disable=too-many-instance-attributes
 
 import logging
+from copy import deepcopy
 
 from .particle import Particle
 from ..util.problem_base import ProblemBase
@@ -27,6 +28,7 @@ class PSOProblem(ProblemBase):
 
     def solve(self) -> Particle:
         # And also update global_best_particle
+        best = None
         for iteration in range(self.__iteration_number):
 
             # Update global best
@@ -35,8 +37,11 @@ class PSOProblem(ProblemBase):
             for particle in self.__particles:
                 particle.step(global_best_particle.position)
 
+            if not best or global_best_particle < best:
+                best = deepcopy(global_best_particle)
+
             if self.iteration_callback:
-                self.iteration_callback(iteration, global_best_particle)
+                self.iteration_callback(iteration, best)
 
         LOGGER.info('Last best solution="%s"', global_best_particle.value)
-        return global_best_particle
+        return best
