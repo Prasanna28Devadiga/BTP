@@ -43,5 +43,5 @@ class PSOProblem(ProblemBase):
             if self.iteration_callback:
                 self.iteration_callback(iteration, best)
 
-        LOGGER.info('Last best solution="%s"', global_best_particle.value)
+        LOGGER.info('Last best solution="%s"', best.value)
         return best
