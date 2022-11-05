@@ -14,13 +14,19 @@ def cost_func(path, curr_map, weight_1, weight_2):
     total_weight = weight_1 + weight_2
     weight_1 /= total_weight
     weight_2 /= total_weight
-    violation = 0
-    for path_point in path:
-        if curr_map[path_point[1], path_point[0]] == 0:
-            violation += 1
+
     length_of_path = 0
-    for x, y in zip(path, path[1:]):
-        length_of_path += np.linalg.norm(x-y)
+    violation = 0
+    prev_x, prev_y = path[0]
+    root_2 = 2 ** 0.5
+    for curr_x, curr_y in path[1:]:
+        if curr_x == prev_x or curr_y == prev_y:
+            length_of_path += 1
+        else:
+            length_of_path += root_2
+        curr_cost = curr_map[curr_y, curr_x]
+        if curr_cost == 0:
+            violation += 1
     
     cost = weight_1 * violation + weight_2 * length_of_path
 
