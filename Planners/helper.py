@@ -11,6 +11,9 @@ def cost_func(path, curr_map, weight_1, weight_2):
         weight_1 (float): weight given to obstacle avoidance
         weight_2 (float): weight given to shortest length
     """
+    total_weight = weight_1 + weight_2
+    weight_1 /= total_weight
+    weight_2 /= total_weight
     violation = 0
     for path_point in path:
         if curr_map[path_point[1], path_point[0]] == 0:
