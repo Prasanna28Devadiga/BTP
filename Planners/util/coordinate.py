@@ -17,6 +17,17 @@ class Coordinate:
         self._function = kwargs['function']
         self.points = kwargs.get('points', 3)
 
+        if 'initial_particle' in kwargs:
+            self.initial_particle = kwargs['initial_particle']
+            self.one_set = kwargs['one_set']
+            self.move_range = kwargs.get('move_range', 0.1)
+            self.particle_initialized = True
+        else:
+            self.initial_particle = None
+            self.one_set = [False]
+            self.move_range = None
+            self.particle_initialized = False
+
         self.__value = None
         self.__position = None
         self._initialize()
@@ -25,7 +36,16 @@ class Coordinate:
         """
         Initialize a new random position and its value
         """
-        self._position = self._random.uniform(self.__lower_boundary, self.__upper_boundary, self.points*2)
+        if self.particle_initialized:
+            if self.one_set[0]:
+                print('One particle set without change')
+                self._position = self.initial_particle.copy()
+                self.one_set[0] = False
+            else:
+                self._position = self.initial_particle + self._random.uniform(-self.move_range, self.move_range, self.points*2)
+                self._position = np.clip(self._position, self.__lower_boundary, self.__upper_boundary)
+        else:
+            self._position = self._random.uniform(self.__lower_boundary, self.__upper_boundary, self.points*2)
 
     @property
     def position(self) -> np.ndarray:

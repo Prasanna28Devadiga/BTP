@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 
 class AStarPlanner:
@@ -6,9 +7,9 @@ class AStarPlanner:
     def __init__(self,matrix):
         self.matrix = matrix
         self.min_x = 0
-        self.max_x = len(matrix[0])
+        self.max_x = len(matrix)
         self.min_y = 0
-        self.max_y = len(matrix)
+        self.max_y = len(matrix[0])
 
     # Node -> cell in matrix with fields of point -> [x,y], g,h,f,parent_node
     class Node:
@@ -103,7 +104,7 @@ class AStarPlanner:
 
         path_points = self.calc_final_path(goal_node,closed_set)
 
-        return path_points
+        return np.array(path_points)
 
     def calc_final_path(self,goal_node,closed_set):
         path_points = []
